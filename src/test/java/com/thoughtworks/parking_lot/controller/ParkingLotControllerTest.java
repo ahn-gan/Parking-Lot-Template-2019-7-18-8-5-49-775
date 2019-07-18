@@ -2,9 +2,11 @@ package com.thoughtworks.parking_lot.controller;
 
 import com.thoughtworks.parking_lot.model.ParkingLot;
 import com.thoughtworks.parking_lot.service.ParkingLotService;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
+import org.mockito.stubbing.OngoingStubbing;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -16,6 +18,11 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import javax.transaction.Transactional;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.mockito.Mockito.doNothing;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -32,6 +39,17 @@ public class ParkingLotControllerTest {
 
     @MockBean
     private ParkingLotService parkingLotService;
+
+    private List<ParkingLot> parkingLotList;
+
+    @Before
+    public void setUp() {
+        parkingLotList = new ArrayList<ParkingLot>(){{
+            add(new ParkingLot("parking-lot-test-name", 20, "Beijing"));
+            add(new ParkingLot("parking-lot-test-name2", 40, "Beijing"));
+            add(new ParkingLot("parking-lot-test-name3", 60, "Beijing"));
+        }};
+    }
 
     @Test
 //    @Transactional
@@ -50,5 +68,18 @@ public class ParkingLotControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.name").value("parking-lot-test-name"));
     }
-    
+
+    @Test
+    @Transactional
+    public void should_return_remain_parking_lots_when_delete_one() throws Exception {
+        doNothing().when(parkingLotService).removeParkingLot(Mockito.anyString());
+        Mockito.when(parkingLotService.findAll())
+                .thenReturn(parkingLotList);
+
+        mockMvc.perform(delete("/parking-lots/{parkingLotName}", "parking-lot-test-name")
+                .contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value(3));
+    }
 }
