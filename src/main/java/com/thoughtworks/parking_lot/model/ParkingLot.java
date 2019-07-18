@@ -23,6 +23,15 @@ public class ParkingLot {
     @Column(name = "position")
     private String position;
 
+    public ParkingLot() {
+    }
+
+    public ParkingLot(String name, @Min(0) int capacity, String position) {
+        this.name = name;
+        this.capacity = capacity;
+        this.position = position;
+    }
+
     public long getId() {
         return id;
     }
