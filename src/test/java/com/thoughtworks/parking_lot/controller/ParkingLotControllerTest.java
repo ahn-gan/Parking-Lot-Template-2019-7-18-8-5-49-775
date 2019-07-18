@@ -92,4 +92,16 @@ public class ParkingLotControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()").value(3));
     }
+
+    @Test
+    public void should_return_parking_lots_when_find_by_id() throws Exception {
+        Mockito.when(parkingLotService.findParkingLotById(Mockito.anyInt()))
+                .thenReturn(parkingLotList.get(0));
+
+        mockMvc.perform(get("/parking-lots/{parkingLotId}", 1)
+                .contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.name").value("parking-lot-test-name"));
+    }
 }
