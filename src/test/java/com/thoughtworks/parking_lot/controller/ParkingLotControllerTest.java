@@ -30,9 +30,15 @@ public class ParkingLotControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
+    @MockBean
+    private ParkingLotService parkingLotService;
+
     @Test
-    @Transactional
+//    @Transactional
     public void should_return_parking_lot_with_id_when_request_to_add() throws Exception {
+        ParkingLot parkingLot = new ParkingLot("parking-lot-test-name", 20, "Beijing");
+        Mockito.when(parkingLotService.addParkingLot(Mockito.any()))
+                .thenReturn(parkingLot);
         mockMvc.perform(post("/parking-lots")
                 .contentType(MediaType.APPLICATION_JSON_UTF8)
                 .content("{\n" +
@@ -44,4 +50,5 @@ public class ParkingLotControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.name").value("parking-lot-test-name"));
     }
+    
 }
