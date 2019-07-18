@@ -6,7 +6,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
-import org.mockito.stubbing.OngoingStubbing;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -22,8 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.mockito.Mockito.doNothing;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -46,8 +44,8 @@ public class ParkingLotControllerTest {
     public void setUp() {
         parkingLotList = new ArrayList<ParkingLot>(){{
             add(new ParkingLot("parking-lot-test-name", 20, "Beijing"));
-            add(new ParkingLot("parking-lot-test-name2", 40, "Beijing"));
-            add(new ParkingLot("parking-lot-test-name3", 60, "Beijing"));
+            add(new ParkingLot("parking-lot-test-name2", 40, "Shanghai"));
+            add(new ParkingLot("parking-lot-test-name3", 60, "Shenzhen"));
         }};
     }
 
@@ -77,6 +75,18 @@ public class ParkingLotControllerTest {
                 .thenReturn(parkingLotList);
 
         mockMvc.perform(delete("/parking-lots/{parkingLotName}", "parking-lot-test-name")
+                .contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value(3));
+    }
+
+    @Test
+    public void should_return_parking_lots_pageable_when_find_all() throws Exception {
+        Mockito.when(parkingLotService.findParkingLots(Mockito.anyInt(), Mockito.anyInt()))
+                .thenReturn(parkingLotList);
+
+        mockMvc.perform(get("/parking-lots?page={page}&pageSize={pageSize}", 1, 3)
                 .contentType(MediaType.APPLICATION_JSON_UTF8))
                 .andDo(print())
                 .andExpect(status().isOk())

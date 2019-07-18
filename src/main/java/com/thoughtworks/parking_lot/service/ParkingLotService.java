@@ -3,7 +3,7 @@ package com.thoughtworks.parking_lot.service;
 import com.thoughtworks.parking_lot.model.ParkingLot;
 import com.thoughtworks.parking_lot.repository.ParkingLotRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -28,5 +28,10 @@ public class ParkingLotService {
 
     public List<ParkingLot> findAll() {
         return parkingLotRepository.findAll();
+    }
+
+    public List<ParkingLot> findParkingLots(int page, int pageSize) {
+        List<ParkingLot> parkingLots = findAll();
+        return (page == 0 || pageSize == 0 || pageSize > parkingLots.size()) ? parkingLots : parkingLotRepository.findAll(PageRequest.of(page -1, pageSize)).getContent();
     }
 }

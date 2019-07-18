@@ -23,4 +23,9 @@ public class ParkingLotController {
         parkingLotService.removeParkingLot(parkingLotName);
         return ResponseEntity.ok(parkingLotService.findAll());
     }
+
+    @GetMapping
+    public ResponseEntity findParkingLots(@RequestParam(value = "page", defaultValue = "0") int page, @RequestParam(value = "pageSize", defaultValue = "0") int pageSize) {
+        return ResponseEntity.ok(parkingLotService.findParkingLots(page, pageSize));
+    }
 }
