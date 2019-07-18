@@ -104,4 +104,22 @@ public class ParkingLotControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.name").value("parking-lot-test-name"));
     }
+
+    @Test
+    public void should_return_parking_lot_with_new_capacity_when_request_to_update() throws Exception {
+        ParkingLot parkingLot = new ParkingLot("parking-lot-test-name", 20, "Beijing");
+        Mockito.when(parkingLotService.updateParkingLotById(Mockito.anyInt(), Mockito.any()))
+                .thenReturn(parkingLot);
+        mockMvc.perform(put("/parking-lots/{parkingLotId}", 1)
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .content("{\n" +
+                        "\t\"id\": 1,\n" +
+                        "\t\"name\": \"parking-lot-test-name\",\n" +
+                        "\t\"capacity\": 50,\n" +
+                        "\t\"position\": \"Beijing\"\n" +
+                        "}"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.capacity").value(20));
+    }
 }
