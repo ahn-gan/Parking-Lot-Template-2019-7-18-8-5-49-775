@@ -31,7 +31,6 @@ public class ParkingLotService {
     }
 
     public List<ParkingLot> findParkingLots(int page, int pageSize) {
-        List<ParkingLot> parkingLots = findAll();
-        return (page == 0 || pageSize == 0 || pageSize > parkingLots.size()) ? parkingLots : parkingLotRepository.findAll(PageRequest.of(page -1, pageSize)).getContent();
+        return (page == 0 || pageSize == 0) ? findAll() : parkingLotRepository.findAll(PageRequest.of(page -1, pageSize)).getContent();
     }
 }
