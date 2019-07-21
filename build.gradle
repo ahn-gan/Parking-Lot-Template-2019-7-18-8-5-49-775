@@ -1,9 +1,11 @@
 plugins {
     id 'org.springframework.boot' version '2.1.6.RELEASE'
     id 'java'
+    id "org.flywaydb.flyway" version "5.2.4"
 }
 
 apply plugin: 'io.spring.dependency-management'
+apply plugin: 'org.flywaydb.flyway'
 
 group = 'com.thoughtworks'
 version = '0.0.1-SNAPSHOT'
@@ -22,7 +24,7 @@ dependencies {
     compile 'org.flywaydb:flyway-core'
 }
 flyway {
-    url = 'jdbc:h2:file:./h2/parkinglot'
+    url = 'jdbc:h2:file:./parkinglot'
     user = 'sa'
     password = ''
 }
