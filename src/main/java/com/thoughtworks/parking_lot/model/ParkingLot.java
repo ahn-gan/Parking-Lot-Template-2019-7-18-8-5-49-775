@@ -2,7 +2,6 @@ package com.thoughtworks.parking_lot.model;
 
 import javax.persistence.*;
 import javax.validation.constraints.Min;
-import java.util.List;
 
 @Entity
 public class ParkingLot {
@@ -21,9 +20,6 @@ public class ParkingLot {
 
     @Column(name = "position")
     private String position;
-
-    @OneToMany(mappedBy = "parkingLot")
-    private List<ParkingOrder> parkingOrders;
 
     public ParkingLot() {
     }
@@ -66,11 +62,4 @@ public class ParkingLot {
         this.position = position;
     }
 
-    public List<ParkingOrder> getParkingOrders() {
-        return parkingOrders;
-    }
-
-    public void setParkingOrders(List<ParkingOrder> parkingOrders) {
-        this.parkingOrders = parkingOrders;
-    }
 }

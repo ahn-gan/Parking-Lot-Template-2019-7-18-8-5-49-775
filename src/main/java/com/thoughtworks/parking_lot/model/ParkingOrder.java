@@ -29,6 +29,18 @@ public class ParkingOrder {
     @Column(name = "status", columnDefinition = "int default 1")
     private int status;
 
+    public ParkingOrder() {
+    }
+
+    public ParkingOrder(String orderNo, ParkingLot parkingLot, String carNo, Date createdTime, Date closedTime, int status) {
+        this.orderNo = orderNo;
+        this.parkingLot = parkingLot;
+        this.carNo = carNo;
+        this.createdTime = createdTime;
+        this.closedTime = closedTime;
+        this.status = status;
+    }
+
     public long getId() {
         return id;
     }
